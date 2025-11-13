@@ -1,0 +1,40 @@
+{
+  "name": "pancake-tracker",
+  "description": "A flexible entrance tracker that automatically shows node connections.",
+  "author": "lonegraywolf2000",
+  "homepage": "https://lonegraywolf2000.github.io",
+  "private": "true",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "publish": "tsc -b && vite build --mode production",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mermaid": "^11.12.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-modal": "^3.16.3",
+    "react-x-mermaid": "^0.0.10"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@types/react-modal": "^3.16.3",
+    "@vitejs/plugin-react-swc": "^4.2.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "rollup-plugin-visualizer": "^6.0.5",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "vite": "^7.2.2",
+    "vite-plugin-compression": "^0.5.1"
+  }
+}
