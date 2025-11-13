@@ -12,5 +12,6 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins,
+    base: '/pancakes/',
   };
 });
