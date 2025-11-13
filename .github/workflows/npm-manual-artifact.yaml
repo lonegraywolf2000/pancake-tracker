@@ -1,0 +1,37 @@
+name: Generate Web Artifacts
+run-name: Create web artifacts to publish manually.
+permissions:
+  contents: write
+  pages: write
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Installing the project dependencies
+      run: npm ci
+    - name: Building the project
+      run: npm run publish
+    - name: Upload the website
+      uses: actions/upload-artifact@v4
+      with:
+        name: pancake-offline-website
+        path: dist/
+        if-no-files-found: error
+        overwrite: true
