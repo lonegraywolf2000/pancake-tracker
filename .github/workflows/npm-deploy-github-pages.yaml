@@ -31,6 +31,7 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         repository-name: lonegraywolf2000/lonegraywolf2000.github.io
+        branch: main
         folder: dist
         target-folder: pancakes
         token: ${{ secrets.PUBLISH_TOKEN }}
