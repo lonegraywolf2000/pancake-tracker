@@ -30,7 +30,7 @@ jobs:
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        branch: main
+        repository-name: lonegraywolf2000/lonegraywolf2000.github.io
         folder: dist
         target-folder: pancakes
         token: ${{ secrets.GITHUB_TOKEN }}
