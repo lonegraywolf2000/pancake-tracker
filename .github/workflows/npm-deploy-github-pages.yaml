@@ -33,4 +33,4 @@ jobs:
         repository-name: lonegraywolf2000/lonegraywolf2000.github.io
         folder: dist
         target-folder: pancakes
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PUBLISH_TOKEN }}
