@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/index-DYZN8Lqg.js","assets/index-C4eKOA9t.js","assets/index-X-M6iVxe.css","assets/_commonjsHelpers-DaWZu8wl.js"])))=>i.map(i=>d[i]);
+import{j as a,r,_ as i}from"./index-C4eKOA9t.js";const s=r.lazy(()=>i(()=>import("./index-DYZN8Lqg.js").then(e=>e.bC),__vite__mapDeps([0,1,2,3]))),o={theme:"dark",themeVariables:{fontSize:"18px"}},d=({mermaidCode:e,config:t})=>a.jsx(r.Suspense,{fallback:a.jsx("div",{children:"Loading map..."}),children:a.jsx(s,{mermaidCode:e,mermaidConfig:t??o})});export{d as default};
