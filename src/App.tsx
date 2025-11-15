@@ -60,7 +60,7 @@ const entrances: Exit[] = [
   { id: 'vd-s', name: 'Vanilla Dome Star' },
   { id: 'tb-s', name: 'Twin Bridges Star' },
   { id: 'fi-t', name: 'Forest of Illusion Star'},
-  { id: 'vb-s', name: 'Valley of Bowser Star' },
+  { id: 'vb-t', name: 'Valley of Bowser Star' },
   { id: 'sz-b', name: 'Special Zone Start' },
   { id: 'yi-s', name: `Yoshi's Island Start` },
 ];
