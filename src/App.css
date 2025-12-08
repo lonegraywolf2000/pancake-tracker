@@ -44,10 +44,15 @@
 .dropdown-grid, .mermaid-container {
   overflow-x: hidden;
   overflow-y: auto;
-  height: 100ex;
+  height: 80vh;
   padding-right: 1ex;
 }
 
 .mermaid-renderer {
   background-color: #222 !important;
+}
+
+.mermaid-container > .mermaid-renderer {
+  height: auto;
+  min-height: 100%;
 }

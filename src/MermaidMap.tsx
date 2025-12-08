@@ -8,12 +8,20 @@ export type MermaidMapProps = {
   config?: MermaidConfig;
 };
 
+// Default config for inline MermaidMap (larger text for legibility)
 const fallbackConfig: MermaidConfig = {
   theme: 'dark',
-  // maxTextSize: 60,
   themeVariables: {
-    fontSize: '18px'
-  }
+    fontSize: '36px',
+    lineColor: '#aaa',
+    tertiaryTextColor: '#fff',
+  },
+  flowchart: {
+    useMaxWidth: true,
+    htmlLabels: true,
+    nodeSpacing: 100,
+    rankSpacing: 100,
+  },
 };
 
 const MermaidMap: FC<MermaidMapProps> = ({ mermaidCode, config }) => {

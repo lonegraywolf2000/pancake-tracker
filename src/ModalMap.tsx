@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Modal from 'react-modal';
 import MermaidMap from './MermaidMap';
+import type { MermaidConfig } from 'mermaid';
 
 type ModalMapProps = {
   isOpen: boolean;
@@ -14,6 +15,18 @@ const fallbackStyles: Modal.Styles = {
   content: {
     color: 'black',
   }
+};
+
+const fallbackConfig: MermaidConfig = {
+  theme: 'dark',
+  themeVariables: {
+    fontSize: '18px',
+    nodePadding: 25,
+  },
+  flowchart: {
+    useMaxWidth: true,
+    htmlLabels: true,
+  },
 };
 
 Modal.setAppElement('#root');
@@ -34,7 +47,7 @@ const ModalMap = ({
     Scroll down as necessary to see the entire thing!
     <button onClick={onRequestClose}>Close</button>
     <Suspense fallback={<div>Loading map...</div>}>
-      <MermaidMap mermaidCode={mermaidCode} config={config} />
+      <MermaidMap mermaidCode={mermaidCode} config={config ?? fallbackConfig} />
     </Suspense>
   </Modal>
 );
