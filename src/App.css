@@ -15,9 +15,13 @@
   grid-template-columns: 40% 60%;
 }
 
+.body-grid.no-map {
+  grid-template-columns: 1fr;
+}
+
 .dropdown-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 0.8fr 0.2fr;
   grid-auto-rows: 24px;
   row-gap: 1ex;
   column-gap: 0;
@@ -55,4 +59,15 @@
 .mermaid-container > .mermaid-renderer {
   height: auto;
   min-height: 100%;
+}
+
+/* Make Mermaid SVG scale with browser zoom */
+.mermaid-renderer svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+}
+
+.mermaid-renderer svg g {
+  transform-origin: 0 0;
 }

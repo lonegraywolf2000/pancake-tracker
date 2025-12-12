@@ -65,37 +65,37 @@ const smwEntrances = [
 
 // Vanilla path definitions - shared across multiple option actions
 const vanillaTransitionPaths = [
-  { from: 'yi-w', to: 'yi-y' },
-  { from: 'yi-e', to: 'dp-o' },
-  { from: 'dp-d', to: 'vd-b' },
-  { from: 'tb-f', to: 'fi-n' },
-  { from: 'fi-w', to: 'fi-o' },
-  { from: 'fi-s', to: 'ch-m' },
-  { from: 'ch-s', to: 'vb-b' },
+  { from: 'yi-s', to: 'yi-y' },
+  { from: 'yi-s', to: 'dp-o' },
+  { from: 'dp-o', to: 'vd-b' },
+  { from: 'tb-e', to: 'fi-n' },
+  { from: 'fi-n', to: 'fi-o' },
+  { from: 'fi-n', to: 'ch-m' },
+  { from: 'ch-m', to: 'vb-b' },
 ];
 
 const vanillaPipePaths = [
-  { from: 'dp-p', to: 'vb-w' },
-  { from: 'vb-n', to: 'dp-e' },
-  { from: 'vd-w', to: 'tb-n' },
-  { from: 'vd-e', to: 'tb-b' },
-  { from: 'ch-e', to: 'vb-e' },
-  { from: 'vb-s', to: 'ch-p' },
+  { from: 'dp-o', to: 'vb-w' },
+  { from: 'vb-w', to: 'dp-e' },
+  { from: 'vd-b', to: 'tb-n' },
+  { from: 'vd-b', to: 'tb-b' },
+  { from: 'ch-m', to: 'vb-e' },
+  { from: 'vb-e', to: 'ch-p' },
 ];
 
 const vanillaStarPaths = [
-  { from: 'dp-s', to: 'sr-1' },
-  { from: 'sr-1', to: 'dp-s' },
-  { from: 'vd-s', to: 'sr-2' },
-  { from: 'sr-2', to: 'vd-s' },
-  { from: 'tb-s', to: 'sr-3' },
-  { from: 'sr-3', to: 'tb-s' },
-  { from: 'fi-t', to: 'sr-4' },
-  { from: 'sr-4', to: 'fi-t' },
+  { from: 'dp-o', to: 'sr-1' },
+  { from: 'sr-1', to: 'dp-o' },
+  { from: 'vd-b', to: 'sr-2' },
+  { from: 'sr-2', to: 'vd-b' },
+  { from: 'tb-b', to: 'sr-3' },
+  { from: 'sr-3', to: 'tb-b' },
+  { from: 'fi-o', to: 'sr-4' },
+  { from: 'sr-4', to: 'fi-o' },
   { from: 'vb-t', to: 'sr-5' },
   { from: 'sr-5', to: 'vb-t' },
-  { from: 'sr-x', to: 'sz-b' },
-  { from: 'sz-e', to: 'yi-s' },
+  { from: 'sr-5', to: 'sz-b' },
+  { from: 'sz-b', to: 'yi-s' },
 ];
 
 // Restrictions: each exit type can only connect to matching entrance types
@@ -262,6 +262,7 @@ export const smw: Game = {
   exits: smwExits,
   entrances: smwEntrances,
   restrictions: smwRestrictions,
+  startUnselected: true,
   displayOrder: [
     'yi-w', 'yi-e', 'dp-s', 'dp-p', 'dp-d', 'vd-s', 'vd-w', 'vd-e',
     'tb-s', 'tb-f', 'fi-w', 'fi-s', 'fi-t', 'ch-e', 'ch-s', 'vb-t',
@@ -304,4 +305,5 @@ export const smw: Game = {
       ],
     },
   ],
+  allowSwapOnDuplicate: true,
 };

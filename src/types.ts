@@ -8,6 +8,8 @@ export type LocationReference = {
   type?: string; // Optional: can be used by games that need to categorize locations
   parentNodeId?: string; // Optional: if this is an edge-label exit, the source node it connects from
   isDrawable?: boolean; // Optional: defaults to true. Set to false to exclude from Mermaid graph
+  arrowType?: '-->' | '<--' | '<-->'; // Optional: arrow direction for connections. Defaults to '-->'
+  bidirectionalPair?: string; // Optional: ID of the paired entrance/exit for bidirectional connections
 };
 
 export type GameOptionValue<T extends string | number = string> = {
@@ -38,6 +40,9 @@ export type Game = {
   transitionPaths?: Array<{ from: string; to: string }>; // Fixed paths used when transitions are not shuffled
   optionActions?: OptionAction[]; // Actions to take when options change
   options: GameOption[];
+  showMap?: boolean; // Optional: whether to display the map by default (defaults to true)
+  startUnselected?: boolean; // Optional: if true, all dropdowns start with empty selection (defaults to false)
+  allowSwapOnDuplicate?: boolean; // Optional: if true, selecting a taken value swaps the mappings (defaults to false for HoD-style, true for SMW-style)
 };
 
 /**
@@ -48,7 +53,7 @@ export type GameSession = {
   gameId: string;
   name: string;
   selectedOptions: Record<string, string | number>; // optionId -> selected value (id from GameOptionValue)
-  exitToEntranceMap: Record<string, string>; // exitId -> entranceId
+  exitToEntranceMap: Record<string, string>; // exitId -> destinationExitId (the specific exit this exit leads to)
   defaultExitToEntranceMap: Record<string, string>; // Original default mapping for reset functionality
   createdAt: number;
   updatedAt: number;
@@ -80,6 +85,7 @@ export type OptionAction = {
   action: {
     hideExits?: string[]; // Exit IDs to hide from UI
     addPaths?: Array<{ from: string; to: string }>; // Mermaid paths to add
+    showMap?: boolean; // Optional: override default map visibility
   };
 };
 
