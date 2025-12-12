@@ -27,6 +27,7 @@ const fallbackConfig: MermaidConfig = {
     useMaxWidth: true,
     htmlLabels: true,
   },
+  securityLevel: 'loose',
 };
 
 Modal.setAppElement('#root');

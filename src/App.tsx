@@ -7,22 +7,23 @@ import type { Game, GameSession } from './types';
 const ModalMap = lazy(() => import('./ModalMap'));
 const MermaidMap = lazy(() => import('./MermaidMap'));
 
-type Exit = {
-  id: string;
-  name: string;
-};
-
 type RenderGridRowProps = {
   idx: number;
   value: string;
   onDropdownChange: (index: number, newValue: string) => void;
-  validEntrances: Exit[];
+  validEntrances: Array<{ id: string; name: string; parentNodeId?: string }>;
   exitName: string;
+  startUnselected?: boolean;
+  disabledOptions?: Set<string>;
 };
 
-const RenderGridRow: FC<RenderGridRowProps> = ({ idx, value, onDropdownChange, validEntrances, exitName }) => {
+const RenderGridRow: FC<RenderGridRowProps> = ({ idx, value, onDropdownChange, validEntrances, exitName, startUnselected, disabledOptions }) => {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     onDropdownChange(idx, e.target.value);
+  }, [idx, onDropdownChange]);
+
+  const handleClear = useCallback(() => {
+    onDropdownChange(idx, '');
   }, [idx, onDropdownChange]);
 
   return (
@@ -35,10 +36,24 @@ const RenderGridRow: FC<RenderGridRowProps> = ({ idx, value, onDropdownChange, v
         onChange={handleChange}
         className="dropdown-select"
       >
-        {validEntrances.map(entrance => (
-          <option key={entrance.id} value={entrance.id}>{entrance.name}</option>
-        ))}
+        {startUnselected && <option value="">Select</option>}
+        {validEntrances.map(entrance => {
+          // Use exit ID as the option value (the specific destination exit)
+          const optionValue = entrance.id;
+          const isDisabled = disabledOptions?.has(optionValue) && value !== optionValue;
+          return (
+            <option key={optionValue} value={optionValue} disabled={isDisabled}>{entrance.name}</option>
+          );
+        })}
       </select>
+      <button
+        onClick={handleClear}
+        title="Clear this selection"
+        className="clear-button"
+        style={{ marginLeft: '0.5rem', padding: '0.25rem 0.75rem' }}
+      >
+        ✕
+      </button>
     </div>
   );
 };
@@ -95,7 +110,6 @@ function App() {
   }
 
   const exits = gameManager.getOrderedExits(currentGameId);
-  const entrances = game.entrances;
 
   const [selected, setSelected] = useState<Record<string, string>>(session.exitToEntranceMap);
   const [isOpen, setIsOpen] = useState(false);
@@ -124,31 +138,10 @@ function App() {
   }, [session]);
 
   const handleDropdownChange = useCallback((idx: number, newValue: string) => {
-    setSelected(prev => {
-      const exitId = exits[idx].id;
-      const currentMapping = { ...prev };
-      const currentEntranceForExit = currentMapping[exitId];
-
-      if (currentEntranceForExit === newValue) return prev;
-
-      // Find if another exit already maps to this entrance
-      const swapExitId = Object.keys(currentMapping).find(key => currentMapping[key] === newValue);
-
-      if (swapExitId && swapExitId !== exitId) {
-        // Swap them
-        currentMapping[exitId] = newValue;
-        currentMapping[swapExitId] = currentEntranceForExit;
-      } else {
-        // Just set the new mapping
-        currentMapping[exitId] = newValue;
-      }
-
-      // Update the session
-      session!.exitToEntranceMap = currentMapping;
-      storage.updateSession(session!);
-
-      return currentMapping;
-    });
+    const exitId = exits[idx].id;
+    // Use gameManager to handle the mapping, which includes bidirectional pairing logic
+    gameManager.setExitMapping(session!, exitId, newValue);
+    setSelected({ ...session!.exitToEntranceMap });
   }, [exits, session]);
 
   const handleReset = () => {
@@ -156,7 +149,7 @@ function App() {
     setSelected({ ...session!.exitToEntranceMap });
   };
 
-  const dynamicLinks = gameManager.generateDynamicLinks(session!, exits, entrances);
+  const dynamicLinks = gameManager.generateDynamicLinks(session!, exits);
 
   // Get visible exits and option-based paths from gameManager
   const visibleExitIds = gameManager.getVisibleExits(session!);
@@ -173,6 +166,24 @@ function App() {
 
   // Filter exits to show only visible ones
   const displayedExits = exits.filter(exit => visibleExitIds.includes(exit.id));
+  
+  // Check if map should be displayed based on game setting and user option
+  let shouldShowMap = game.showMap !== false; // defaults to true
+  
+  // Check if any option action overrides map visibility
+  if (game.optionActions) {
+    for (const optionAction of game.optionActions) {
+      const optionValue = session!.selectedOptions[optionAction.condition.optionId];
+      if (optionValue === optionAction.condition.value && optionAction.action.showMap !== undefined) {
+        shouldShowMap = optionAction.action.showMap;
+        break;
+      }
+    }
+  }
+  
+  // Also check for show-map user option override
+  const showMapByOption = session!.selectedOptions['show-map'] !== 'off'; // defaults to on
+  shouldShowMap = shouldShowMap && showMapByOption;
 
   return <>
     <nav>
@@ -224,13 +235,27 @@ function App() {
         mermaidCode={mermaidCode}
       />}
     </nav>
-    <article className='body-grid'>
+    <article className={`body-grid${shouldShowMap ? '' : ' no-map'}`}>
       <section className='dropdown-grid'>
         {displayedExits.map((exit, idx) => {
-          const validEntrances = gameManager
-            .getValidEntrancesForExit(currentGameId, exit.id, session!.selectedOptions)
-            .map(entranceId => entrances.find(e => e.id === entranceId))
-            .filter((e): e is Exit => e !== undefined);
+          const validExitIds = gameManager
+            .getValidEntrancesForExit(currentGameId, exit.id, session!.selectedOptions);
+          
+          // Convert exit IDs to entrance display options
+          const validEntrances = validExitIds.flatMap(exitId => 
+            gameManager.getEntrancesForNode(currentGameId, exitId)
+          );
+
+          // Build disabled options set only if game doesn't allow swap on duplicate
+          let disabledOptions: Set<string> | undefined;
+          if (!game.allowSwapOnDuplicate) {
+            // Get all selected values except the current one
+            const selectedValues = Object.entries(selected)
+              .filter(([selectedExitId]) => selectedExitId !== exit.id)
+              .map(([, value]) => value)
+              .filter(value => value); // exclude empty strings
+            disabledOptions = new Set(selectedValues);
+          }
 
           return (
             <RenderGridRow
@@ -240,11 +265,13 @@ function App() {
               onDropdownChange={handleDropdownChange}
               validEntrances={validEntrances}
               exitName={exit.name}
+              startUnselected={game.startUnselected}
+              disabledOptions={disabledOptions}
             />
           );
         })}
       </section>
-      {!isOpen &&
+      {shouldShowMap &&
       <section className="mermaid-container">
         <Suspense fallback={<div>Loading map...</div>}>
           <MermaidMap mermaidCode={mermaidCode} />
