@@ -312,6 +312,12 @@ export const gameManager = {
         const destinationExit = exits.find(e => e.id === destinationExitId);
         const destinationNodeId = destinationExit?.parentNodeId || destinationExitId;
 
+        // Determine the source node ID
+        const sourceNodeId = exit.parentNodeId || exit.id;
+
+        // Skip self-loops (transitions that map back to the same node)
+        if (sourceNodeId === destinationNodeId) return '';
+
         // Determine arrow type
         // If decoupled, always use one-way arrow. Otherwise use the exit's defined arrow type
         let arrow = exit.arrowType || '-->';
