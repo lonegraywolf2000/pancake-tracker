@@ -237,39 +237,78 @@ function App() {
     </nav>
     <article className={`body-grid${shouldShowMap ? '' : ' no-map'}`}>
       <section className='dropdown-grid'>
-        {displayedExits.map((exit, idx) => {
-          const validExitIds = gameManager
-            .getValidEntrancesForExit(currentGameId, exit.id, session!.selectedOptions);
+        {(() => {
+          // Group exits by UI group
+          const grouped = new Map<string | null, typeof displayedExits>();
           
-          // Convert exit IDs to entrance display options
-          const validEntrances = validExitIds.flatMap(exitId => 
-            gameManager.getEntrancesForNode(currentGameId, exitId)
-          );
+          displayedExits.forEach(exit => {
+            const groupKey = exit.uiGroup || null; // null for no group
+            if (!grouped.has(groupKey)) {
+              grouped.set(groupKey, []);
+            }
+            grouped.get(groupKey)!.push(exit);
+          });
 
-          // Build disabled options set only if game doesn't allow swap on duplicate
-          let disabledOptions: Set<string> | undefined;
-          if (!game.allowSwapOnDuplicate) {
-            // Get all selected values except the current one
-            const selectedValues = Object.entries(selected)
-              .filter(([selectedExitId]) => selectedExitId !== exit.id)
-              .map(([, value]) => value)
-              .filter(value => value); // exclude empty strings
-            disabledOptions = new Set(selectedValues);
-          }
+          // Render grouped exits with headings, then ungrouped exits
+          const withGroups: React.ReactNode[] = [];
+          const withoutGroups: React.ReactNode[] = [];
 
-          return (
-            <RenderGridRow
-              key={exit.id}
-              idx={idx}
-              value={selected[exit.id] || ''}
-              onDropdownChange={handleDropdownChange}
-              validEntrances={validEntrances}
-              exitName={exit.name}
-              startUnselected={game.startUnselected}
-              disabledOptions={disabledOptions}
-            />
-          );
-        })}
+          grouped.forEach((exitsInGroup, groupName) => {
+            const renderedExits = exitsInGroup.map((exit) => {
+              const validExitIds = gameManager
+                .getValidEntrancesForExit(currentGameId, exit.id, session!.selectedOptions);
+              
+              // Convert exit IDs to entrance display options
+              const validEntrances = validExitIds.flatMap(exitId => 
+                gameManager.getEntrancesForNode(currentGameId, exitId)
+              );
+
+              // Build disabled options set only if game doesn't allow swap on duplicate
+              let disabledOptions: Set<string> | undefined;
+              if (!game.allowSwapOnDuplicate) {
+                // Get all selected values except the current one
+                const selectedValues = Object.entries(selected)
+                  .filter(([selectedExitId]) => selectedExitId !== exit.id)
+                  .map(([, value]) => value)
+                  .filter(value => value); // exclude empty strings
+                disabledOptions = new Set(selectedValues);
+              }
+
+              const overallIdx = exits.findIndex(e => e.id === exit.id);
+
+              return (
+                <RenderGridRow
+                  key={exit.id}
+                  idx={overallIdx}
+                  value={selected[exit.id] || ''}
+                  onDropdownChange={handleDropdownChange}
+                  validEntrances={validEntrances}
+                  exitName={exit.name}
+                  startUnselected={game.startUnselected}
+                  disabledOptions={disabledOptions}
+                />
+              );
+            });
+
+            if (groupName) {
+              // Has a UI group
+              withGroups.push(
+                <div key={`group-${groupName}`}>
+                  <h3>{groupName}</h3>
+                  {renderedExits}
+                </div>
+              );
+            } else {
+              // No UI group
+              withoutGroups.push(...renderedExits);
+            }
+          });
+
+          return <>
+            {withGroups}
+            {withoutGroups}
+          </>;
+        })()}
       </section>
       {shouldShowMap &&
       <section className="mermaid-container">

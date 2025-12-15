@@ -10,6 +10,7 @@ export type LocationReference = {
   isDrawable?: boolean; // Optional: defaults to true. Set to false to exclude from Mermaid graph
   arrowType?: '-->' | '<--' | '<-->'; // Optional: arrow direction for connections. Defaults to '-->'
   bidirectionalPair?: string; // Optional: ID of the paired entrance/exit for bidirectional connections
+  uiGroup?: string; // Optional: UI group name for grouping exits/entrances in the display
 };
 
 export type GameOptionValue<T extends string | number = string> = {
