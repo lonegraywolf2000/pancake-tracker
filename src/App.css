@@ -27,6 +27,30 @@
   column-gap: 0;
 }
 
+.dropdown-grid > div {
+  display: contents;
+}
+
+.dropdown-grid > div h3 {
+  grid-column: 1 / -1;
+  height: auto;
+  min-height: auto;
+  margin: 0;
+  padding: 0.5rem 0;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.dropdown-grid > div h3::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #ccc;
+}
+
 .dropdown-row {
   display: contents; /* Makes children direct grid items */
 }
