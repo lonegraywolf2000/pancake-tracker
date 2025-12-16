@@ -369,21 +369,24 @@ function App() {
     <article className={`body-grid${shouldShowMap ? '' : ' no-map'}`}>
       <section className='dropdown-grid'>
         {(() => {
-          // Group exits by UI group, defaulting to "All Exits" if no group specified
+          // Group exits by UI group while preserving order of first appearance
           const grouped = new Map<string, typeof displayedExits>();
+          const groupOrder: string[] = []; // Track order of first appearance
           
           displayedExits.forEach(exit => {
             const groupKey = exit.uiGroup || 'All Exits'; // Default to "All Exits" if no group
             if (!grouped.has(groupKey)) {
               grouped.set(groupKey, []);
+              groupOrder.push(groupKey); // Record order of first appearance
             }
             grouped.get(groupKey)!.push(exit);
           });
 
-          // Render grouped exits with headings
+          // Render grouped exits with headings in order of first appearance
           const renderedGroups: React.ReactNode[] = [];
 
-          grouped.forEach((exitsInGroup, groupName) => {
+          groupOrder.forEach((groupName) => {
+            const exitsInGroup = grouped.get(groupName)!;
             const renderedExits = exitsInGroup.map((exit) => {
               const validExitIds = gameManager
                 .getValidEntrancesForExit(currentGameId, exit.id, session!.selectedOptions);
