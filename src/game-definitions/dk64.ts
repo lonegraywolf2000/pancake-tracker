@@ -50,10 +50,10 @@ const dk64Exits: LocationReference[] = [
   { id: 'fungi-lobby-isles', name: 'Fungi Lobby → DK Isles', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'isles-fungi-lobby' },
   { id: 'caves-lobby-entrance', name: 'Caves Lobby → Caves Level Entrance', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'caves-entrance-lobby' },
   { id: 'caves-lobby-isles', name: 'Caves Lobby → DK Isles', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'isles-caves-lobby' },
-  { id: 'castle-lobby-entrance', name: 'Castle Lobby → Castle Level Entrance', uiGroup: 'Creepy Castle', parentNodeId: 'castle', arrowType: '<-->', bidirectionalPair: 'castle-entrance-lobby' },
+  { id: 'castle-lobby-entrance', name: 'Castle Lobby → Castle Level Entrance', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'castle-entrance-lobby' },
   { id: 'castle-lobby-isles', name: 'Castle Lobby → DK Isles', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'isles-castle-lobby' },
   { id: 'helm-lobby-entrance', name: 'Helm Lobby → Helm Level Entrance', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'helm-entrance-lobby' },
-  { id: 'helm-entrance-lobby', name: 'Helm Level Entrance → Helm Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'helm-lobby-entrance' },
+  { id: 'helm-entrance-lobby', name: 'Helm Level Entrance → Helm Lobby', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'helm-lobby-entrance' },
   { id: 'helm-lobby-isles', name: 'Helm Lobby → DK Isles', uiGroup: 'Level Lobby', parentNodeId: 'isles', arrowType: '<-->', bidirectionalPair: 'isles-helm-lobby' },
 
   // Jungle Japes
