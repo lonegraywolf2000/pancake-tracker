@@ -11,6 +11,7 @@ export type LocationReference = {
   arrowType?: '-->' | '<--' | '<-->'; // Optional: arrow direction for connections. Defaults to '-->'
   bidirectionalPair?: string; // Optional: ID of the paired entrance/exit for bidirectional connections
   uiGroup?: string; // Optional: UI group name for grouping exits/entrances in the display
+  tags?: string[]; // Optional: tags for searching/filtering (e.g., ["creepy-castle", "boss-door"])
 };
 
 export type GameOptionValue<T extends string | number = string> = {
@@ -44,6 +45,7 @@ export type Game = {
   showMap?: boolean; // Optional: whether to display the map by default (defaults to true)
   startUnselected?: boolean; // Optional: if true, all dropdowns start with empty selection (defaults to false)
   allowSwapOnDuplicate?: boolean; // Optional: if true, selecting a taken value swaps the mappings (defaults to false for HoD-style, true for SMW-style)
+  hideDisabledOptions?: boolean; // Optional: if true, completely hide disabled options from dropdowns instead of showing them disabled (defaults to false)
 };
 
 /**

@@ -1,4 +1,5 @@
-import { lazy, Suspense, useCallback, useState, type FC } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type FC } from 'react'
+import Fuse from 'fuse.js'
 import './App.css';
 import { gameManager } from './gameManager';
 import { storage } from './storage';
@@ -6,51 +7,171 @@ import type { Game, GameSession } from './types';
 
 const ModalMap = lazy(() => import('./ModalMap'));
 const MermaidMap = lazy(() => import('./MermaidMap'));
+const ModalNotepad = lazy(() => import('./ModalNotepad'));
 
 type RenderGridRowProps = {
   idx: number;
   value: string;
   onDropdownChange: (index: number, newValue: string) => void;
-  validEntrances: Array<{ id: string; name: string; parentNodeId?: string }>;
+  validEntrances: Array<{ id: string; name: string; parentNodeId?: string; tags?: string[] }>;
   exitName: string;
   startUnselected?: boolean;
   disabledOptions?: Set<string>;
+  hideDisabledOptions?: boolean;
 };
 
-const RenderGridRow: FC<RenderGridRowProps> = ({ idx, value, onDropdownChange, validEntrances, exitName, startUnselected, disabledOptions }) => {
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    onDropdownChange(idx, e.target.value);
+const RenderGridRow: FC<RenderGridRowProps> = ({ idx, value, onDropdownChange, validEntrances, exitName, startUnselected, disabledOptions, hideDisabledOptions }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectChange = useCallback((selectedId: string) => {
+    onDropdownChange(idx, selectedId);
+    setShowDropdown(false);
+    setSearchQuery('');
   }, [idx, onDropdownChange]);
 
   const handleClear = useCallback(() => {
     onDropdownChange(idx, '');
   }, [idx, onDropdownChange]);
 
+  // Handle click-outside to close dropdown and clear search
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+        setSearchQuery('');
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showDropdown]);
+
+  // Filter out disabled options if hideDisabledOptions is true
+  let displayedEntrances = hideDisabledOptions && disabledOptions
+    ? validEntrances.filter(entrance => !disabledOptions.has(entrance.id) || entrance.id === value)
+    : validEntrances;
+
+  // Apply fuzzy search if query exists
+  let filteredEntrances = displayedEntrances;
+  if (searchQuery.trim()) {
+    const fuse = new Fuse(displayedEntrances, {
+      keys: ['name', 'tags'],
+      threshold: 0.3,
+      isCaseSensitive: false,
+      minMatchCharLength: 1,
+    });
+    filteredEntrances = fuse.search(searchQuery).map(result => result.item);
+  }
+
+  const selectedEntrance = validEntrances.find(e => e.id === value);
+
   return (
-    <div className="dropdown-row">
+    <div className="dropdown-row" ref={dropdownRef}>
       <div className="exit-label">{exitName}</div>
-      <select
-        id={`drop-${idx}`}
-        data-idx={idx}
-        value={value}
-        onChange={handleChange}
-        className="dropdown-select"
-      >
-        {startUnselected && <option value="">Select</option>}
-        {validEntrances.map(entrance => {
-          // Use exit ID as the option value (the specific destination exit)
-          const optionValue = entrance.id;
-          const isDisabled = disabledOptions?.has(optionValue) && value !== optionValue;
-          return (
-            <option key={optionValue} value={optionValue} disabled={isDisabled}>{entrance.name}</option>
-          );
-        })}
-      </select>
+      <div className='transition-selection'>
+        <input
+          type="text"
+          placeholder="Search or click to open..."
+          value={value && !searchQuery ? (selectedEntrance?.name || '') : searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setShowDropdown(true)}
+          onClick={() => setShowDropdown(true)}
+          className="dropdown-search"
+          style={{
+            width: '100%',
+            padding: '0.4rem 0.5rem',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            fontSize: '0.95rem',
+            boxSizing: 'border-box',
+          }}
+        />
+        {showDropdown && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: 'white',
+              border: '1px solid #ccc',
+              borderTop: 'none',
+              borderRadius: '0 0 4px 4px',
+              maxHeight: '250px',
+              overflowY: 'auto',
+              zIndex: 1000,
+              marginTop: '-1px',
+            }}
+          >
+            {startUnselected && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelectChange('');
+                }}
+                style={{
+                  padding: '0.5rem 0.75rem',
+                  cursor: 'pointer',
+                  backgroundColor: value === '' ? '#e0e0e0' : 'white',
+                  borderBottom: '1px solid #f0f0f0',
+                  color: '#000',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f5f5f5';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = value === '' ? '#e0e0e0' : 'white';
+                }}
+              >
+                Select
+              </div>
+            )}
+            {filteredEntrances.length === 0 ? (
+              <div style={{ padding: '0.5rem', color: '#999', textAlign: 'center' }}>No matches</div>
+            ) : (
+              filteredEntrances.map(entrance => {
+                const optionValue = entrance.id;
+                const isDisabled = disabledOptions?.has(optionValue) && value !== optionValue;
+                return (
+                  <div
+                    key={optionValue}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isDisabled) {
+                        handleSelectChange(optionValue);
+                      }
+                    }}
+                    style={{
+                      padding: '0.5rem 0.75rem',
+                      cursor: isDisabled ? 'not-allowed' : 'pointer',
+                      backgroundColor: optionValue === value ? '#e0e0e0' : 'white',
+                      opacity: isDisabled ? 0.5 : 1,
+                      borderBottom: '1px solid #f0f0f0',
+                      color: '#000',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isDisabled) e.currentTarget.style.backgroundColor = '#f5f5f5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = optionValue === value ? '#e0e0e0' : 'white';
+                    }}
+                  >
+                    {entrance.name}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+      </div>
       <button
         onClick={handleClear}
         title="Clear this selection"
         className="clear-button"
-        style={{ marginLeft: '0.5rem', padding: '0.25rem 0.75rem' }}
       >
         ✕
       </button>
@@ -92,6 +213,7 @@ function App() {
   const [currentGameId, setCurrentGameId] = useState<string>(appState.currentGameId);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(appState.currentSessionId);
   const [, forceUpdate] = useState({});
+  const [isNotepadOpen, setIsNotepadOpen] = useState(false);
 
   const game = gameManager.getGame(currentGameId);
   if (!game) return <div>Game not found</div>;
@@ -224,6 +346,7 @@ function App() {
       <div>
         <button onClick={() => handleReset()}>Reset Connections</button>
         <button onClick={() => setIsOpen(true)} style={{ marginLeft: '0.5rem' }}>Full Size Map</button>
+        <button onClick={() => setIsNotepadOpen(true)} style={{ marginLeft: '0.5rem' }}>Notes</button>
         <div style={{ marginLeft: '2rem', display: 'inline-block' }}>
           <GameOptions game={game} session={session!} onOptionChange={handleOptionChange} />
         </div>
@@ -234,24 +357,31 @@ function App() {
         onRequestClose={() => setIsOpen(false)}
         mermaidCode={mermaidCode}
       />}
+      {isNotepadOpen && <Suspense fallback={<div>Loading notepad...</div>}>
+        <ModalNotepad
+          isOpen={isNotepadOpen}
+          onClose={() => setIsNotepadOpen(false)}
+          gameId={currentGameId}
+          sessionId={currentSessionId}
+        />
+      </Suspense>}
     </nav>
     <article className={`body-grid${shouldShowMap ? '' : ' no-map'}`}>
       <section className='dropdown-grid'>
         {(() => {
-          // Group exits by UI group
-          const grouped = new Map<string | null, typeof displayedExits>();
+          // Group exits by UI group, defaulting to "All Exits" if no group specified
+          const grouped = new Map<string, typeof displayedExits>();
           
           displayedExits.forEach(exit => {
-            const groupKey = exit.uiGroup || null; // null for no group
+            const groupKey = exit.uiGroup || 'All Exits'; // Default to "All Exits" if no group
             if (!grouped.has(groupKey)) {
               grouped.set(groupKey, []);
             }
             grouped.get(groupKey)!.push(exit);
           });
 
-          // Render grouped exits with headings, then ungrouped exits
-          const withGroups: React.ReactNode[] = [];
-          const withoutGroups: React.ReactNode[] = [];
+          // Render grouped exits with headings
+          const renderedGroups: React.ReactNode[] = [];
 
           grouped.forEach((exitsInGroup, groupName) => {
             const renderedExits = exitsInGroup.map((exit) => {
@@ -286,28 +416,20 @@ function App() {
                   exitName={exit.name}
                   startUnselected={game.startUnselected}
                   disabledOptions={disabledOptions}
+                  hideDisabledOptions={game.hideDisabledOptions}
                 />
               );
             });
 
-            if (groupName) {
-              // Has a UI group
-              withGroups.push(
-                <div key={`group-${groupName}`}>
-                  <h3>{groupName}</h3>
-                  {renderedExits}
-                </div>
-              );
-            } else {
-              // No UI group
-              withoutGroups.push(...renderedExits);
-            }
+            renderedGroups.push(
+              <div key={`group-${groupName}`}>
+                <h3>{groupName}</h3>
+                {renderedExits}
+              </div>
+            );
           });
 
-          return <>
-            {withGroups}
-            {withoutGroups}
-          </>;
+          return renderedGroups;
         })()}
       </section>
       {shouldShowMap &&

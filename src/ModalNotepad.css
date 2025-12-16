@@ -1,0 +1,83 @@
+.modal-notepad {
+  position: fixed;
+  background-color: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+  min-width: 200px;
+  min-height: 150px;
+  user-select: none;
+}
+
+.modal-notepad-header {
+  background-color: #303030;
+  border-bottom: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.modal-notepad-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.modal-notepad-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  color: orange;
+}
+
+.modal-notepad-close:hover {
+  color: #e00;
+}
+
+.modal-notepad-textarea {
+  flex: 1;
+  border: none;
+  padding: 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  resize: none;
+  overflow: auto;
+  outline: none;
+}
+
+.modal-notepad-textarea:focus {
+  outline: 1px solid #0066cc;
+}
+
+.modal-notepad-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, #999 50%);
+  border-radius: 0 0 6px 0;
+  flex-shrink: 0;
+}
+
+.modal-notepad-resize:hover {
+  background: linear-gradient(135deg, transparent 50%, #666 50%);
+}

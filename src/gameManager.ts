@@ -168,20 +168,20 @@ export const gameManager = {
    * Get display info for an entrance/exit by ID
    * Handles both exits with parentNodeId (HoD) and standalone entrances (SMW)
    */
-  getEntrancesForNode(gameId: string, entranceId: string): Array<{ id: string; name: string; parentNodeId?: string }> {
+  getEntrancesForNode(gameId: string, entranceId: string): Array<{ id: string; name: string; parentNodeId?: string; tags?: string[] }> {
     const game = this.getGame(gameId);
     if (!game) return [];
 
     // First try to find by exit ID
     const exitMatch = game.exits.find(e => e.id === entranceId);
     if (exitMatch) {
-      return [{ id: exitMatch.id, name: exitMatch.name, parentNodeId: exitMatch.parentNodeId }];
+      return [{ id: exitMatch.id, name: exitMatch.name, parentNodeId: exitMatch.parentNodeId, tags: exitMatch.tags }];
     }
 
     // Then try to find by entrance ID (for games like SMW without parentNodeId)
     const entranceMatch = game.entrances.find(e => e.id === entranceId);
     if (entranceMatch) {
-      return [{ id: entranceMatch.id, name: entranceMatch.name, parentNodeId: entranceMatch.parentNodeId }];
+      return [{ id: entranceMatch.id, name: entranceMatch.name, parentNodeId: entranceMatch.parentNodeId, tags: entranceMatch.tags }];
     }
 
     return [];
@@ -299,6 +299,11 @@ export const gameManager = {
     // Check if transitions are decoupled
     const decoupleTransitions = session.selectedOptions['decouple-transitions'] === 'true';
 
+    // Helper function to escape special Mermaid characters in labels
+    const escapeMermaidLabel = (label: string): string => {
+      return label.replace(/#/g, '\\#');
+    };
+
     return exits
       .map(exit => {
         // Skip exits marked as non-drawable
@@ -327,7 +332,8 @@ export const gameManager = {
 
         // If this exit has a parentNodeId, it's an edge-label exit
         if (exit.parentNodeId) {
-          return `${exit.parentNodeId}${arrow}|${exit.name}|${destinationNodeId};`;
+          const escapedName = escapeMermaidLabel(exit.name);
+          return `${exit.parentNodeId}${arrow}|${escapedName}|${destinationNodeId};`;
         }
 
         // Otherwise use node-based format (exit as intermediate node)

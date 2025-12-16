@@ -2,6 +2,15 @@ import type { AppState, GameSession } from './types';
 import { DEFAULT_GAME_ID } from './game-definitions';
 
 const STORAGE_KEY = 'waffle-tracker-state';
+const NOTEPAD_KEY = 'waffle-tracker-notepads';
+
+type NotepadData = {
+  content: string;
+  position: { x: number; y: number };
+  size: { width: number; height: number };
+};
+
+type NotepadStorage = Record<string, NotepadData>;
 
 const defaultState: AppState = {
   currentGameId: DEFAULT_GAME_ID,
@@ -95,5 +104,28 @@ export const storage = {
   getSessionsByGame(gameId: string): GameSession[] {
     const state = this.getState();
     return state.sessions.filter(s => s.gameId === gameId);
+  },
+
+  getNotepadData(key: string): NotepadData | undefined {
+    try {
+      const stored = localStorage.getItem(NOTEPAD_KEY);
+      if (!stored) return undefined;
+      const notepads: NotepadStorage = JSON.parse(stored);
+      return notepads[key];
+    } catch {
+      console.warn('Failed to load notepad data from localStorage');
+      return undefined;
+    }
+  },
+
+  setNotepadData(key: string, data: NotepadData): void {
+    try {
+      const stored = localStorage.getItem(NOTEPAD_KEY);
+      const notepads: NotepadStorage = stored ? JSON.parse(stored) : {};
+      notepads[key] = data;
+      localStorage.setItem(NOTEPAD_KEY, JSON.stringify(notepads));
+    } catch (error) {
+      console.error('Failed to save notepad data to localStorage', error);
+    }
   },
 };
