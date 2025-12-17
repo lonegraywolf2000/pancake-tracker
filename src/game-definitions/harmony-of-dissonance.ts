@@ -51,77 +51,92 @@ const hodNodes = [
   { id: 'top-b', name: 'Castle Top Floor B' },
 ];
 
+const entranceTags = ['entrance'];
+const marbleTags = ['marble'];
+const wailingTags = ['wailing', 'approach'];
+const shrineTags = ['shrine', 'apostate', 'grave'];
+const illusionTags = ['illusion'];
+const treasuryTags = ['treasury'];
+const skeletonTags = ['skeleton'];
+const luminousTags = ['luminous', 'cave', 'moss'];
+const skyTags = ['sky', 'cooridor'];
+const chapelTags = ['chapel', 'dissonance'];
+const clockTags = ['clock'];
+const aqueductTags = ['aqua', 'aqueduct', 'dragon', 'waterway'];
+const topTags = ['top', 'tower'];
+
 const hodAExits: HodExit[] = [
   // Entrance A exits
-  { id: 'entrance-a-n', name: 'Entrance A → Marble A', direction: 'east' as const, uiGroup: 'Entrance A', tags: ['entrance'], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-w' },
-  { id: 'entrance-a-e', name: 'Entrance A → Shrine A', direction: 'east' as const, uiGroup: 'Entrance A', tags: ['entrance'], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'shrine-a-w' },
-  { id: 'entrance-a-s', name: 'Entrance A → Skeleton A', direction: 'south' as const, uiGroup: 'Entrance A', tags: ['entrance'], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'skeleton-a-w' },
+  { id: 'entrance-a-n', name: 'Entrance A → Marble A', direction: 'east' as const, uiGroup: 'Entrance A', tags: [...entranceTags, ...marbleTags], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-w' },
+  { id: 'entrance-a-e', name: 'Entrance A → Shrine A', direction: 'east' as const, uiGroup: 'Entrance A', tags: [...entranceTags, ...shrineTags], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'shrine-a-w' },
+  { id: 'entrance-a-s', name: 'Entrance A → Skeleton A', direction: 'south' as const, uiGroup: 'Entrance A', tags: [...entranceTags, ...skeletonTags], parentNodeId: 'entrance-a', arrowType: '<-->' as const, bidirectionalPair: 'skeleton-a-w' },
   
   // Marble Corridor A entrances
-  { id: 'marble-a-w', name: 'Marble A → Entrance A', direction: 'west' as const, uiGroup: 'Marble A', tags: ['marble'], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-n' },
-  { id: 'marble-a-ssw', name: 'Marble A → Illusion A West', direction: 'west' as const, uiGroup: 'Marble A', tags: ['marble'], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'illusion-a-w' },
-  { id: 'marble-a-sse', name: 'Marble A → Illusion A East', direction: 'east' as const, uiGroup: 'Marble A', tags: ['marble'], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'illusion-a-e' },
-  { id: 'marble-a-se', name: 'Marble A → Wailing A', direction: 'east' as const, uiGroup: 'Marble A', tags: ['marble'], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-w' },
-  { id: 'marble-a-e', name: 'Marble A → Top A', direction: 'east' as const, uiGroup: 'Marble A', tags: ['marble'], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-w' },
+  { id: 'marble-a-w', name: 'Marble A → Entrance A', direction: 'west' as const, uiGroup: 'Marble A', tags: [...marbleTags, ...entranceTags], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-n' },
+  { id: 'marble-a-ssw', name: 'Marble A → Illusion A West', direction: 'west' as const, uiGroup: 'Marble A', tags: [...marbleTags, ...illusionTags], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'illusion-a-w' },
+  { id: 'marble-a-sse', name: 'Marble A → Illusion A East', direction: 'east' as const, uiGroup: 'Marble A', tags: [...marbleTags, ...illusionTags], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'illusion-a-e' },
+  { id: 'marble-a-se', name: 'Marble A → Wailing A', direction: 'east' as const, uiGroup: 'Marble A', tags: [...marbleTags, ...wailingTags], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-w' },
+  { id: 'marble-a-e', name: 'Marble A → Top A', direction: 'east' as const, uiGroup: 'Marble A', tags: [...marbleTags, ...topTags], parentNodeId: 'marble-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-w' },
 
   // Wailing Way A
-  { id: 'wailing-a-w', name: 'Wailing A → Marble A', direction: 'west' as const, uiGroup: 'Wailing A', tags: ['wailing', 'approach'], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-se'},
-  { id: 'wailing-a-e', name: 'Wailing A → Treasury A', direction: 'east' as const, uiGroup: 'Wailing A', tags: ['wailing', 'approach'], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-w'},
-  { id: 'wailing-a-s', name: 'Wailing A → Shrine A', direction: 'east' as const, uiGroup: 'Wailing A', tags: ['wailing', 'approach'], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'shrine-a-n' },
+  { id: 'wailing-a-w', name: 'Wailing A → Marble A', direction: 'west' as const, uiGroup: 'Wailing A', tags: [...wailingTags, ...marbleTags], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-se'},
+  { id: 'wailing-a-e', name: 'Wailing A → Treasury A', direction: 'east' as const, uiGroup: 'Wailing A', tags: [...wailingTags, ...treasuryTags], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-w'},
+  { id: 'wailing-a-s', name: 'Wailing A → Shrine A', direction: 'east' as const, uiGroup: 'Wailing A', tags: [...wailingTags, ...shrineTags], parentNodeId: 'wailing-a', arrowType: '<-->' as const, bidirectionalPair: 'shrine-a-n' },
   
   // Shrine of the Apostates A
-  { id: 'shrine-a-w', name: 'Shrine A → Entrance A', direction: 'west' as const, uiGroup: 'Shrine A', tags: ['shrine', 'apostate', 'grave'], parentNodeId: 'shrine-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-e' },
-  { id: 'shrine-a-n', name: 'Shrine A → Wailing A', direction: 'west' as const, uiGroup: 'Shrine A', tags: ['shrine', 'apostate', 'grave'], parentNodeId: 'shrine-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-s'},
+  { id: 'shrine-a-w', name: 'Shrine A → Entrance A', direction: 'west' as const, uiGroup: 'Shrine A', tags: [...shrineTags, ...entranceTags], parentNodeId: 'shrine-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-e' },
+  { id: 'shrine-a-n', name: 'Shrine A → Wailing A', direction: 'west' as const, uiGroup: 'Shrine A', tags: [...shrineTags, ...wailingTags], parentNodeId: 'shrine-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-s'},
   
   // Illusion A (splits into west and east)
-  { id: 'illusion-a-w', name: 'Illusion A West → Marble A', direction: 'east' as const, uiGroup: 'Illusion A', tags: ['illusion'], arrowType: '<-->' as const, bidirectionalPair: 'marble-a-ssw' },
-  { id: 'illusion-a-e', name: 'Illusion A East → Marble A', direction: 'west' as const, uiGroup: 'Illusion A', tags: ['illusion'], arrowType: '<-->' as const, bidirectionalPair: 'marble-a-sse' },
+  { id: 'illusion-a-w', name: 'Illusion A West → Marble A', direction: 'east' as const, uiGroup: 'Illusion A', tags: [...illusionTags, ...marbleTags], arrowType: '<-->' as const, bidirectionalPair: 'marble-a-ssw' },
+  { id: 'illusion-a-e', name: 'Illusion A East → Marble A', direction: 'west' as const, uiGroup: 'Illusion A', tags: [...illusionTags, ...marbleTags], arrowType: '<-->' as const, bidirectionalPair: 'marble-a-sse' },
 
   // Treasury A
-  { id: 'treasury-a-w', name: 'Treasury A → Wailing A', direction: 'west' as const, uiGroup: 'Treasury A', tags: ['treasury'], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-e' },
-  { id: 'treasury-a-n', name: 'Treasury A → Skeleton A', direction: 'west' as const, uiGroup: 'Treasury A', tags: ['treasury'], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'skeleton-a-e' },
-  { id: 'treasury-a-e', name: 'Treasury A → Luminous A', direction: 'east' as const, uiGroup: 'Treasury A', tags: ['treasury'], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'luminous-a-w' },
-  { id: 'treasury-a-s', name: 'Treasury A → Top A', direction: 'north' as const, uiGroup: 'Treasury A', tags: ['treasury'], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-n' },
+  { id: 'treasury-a-w', name: 'Treasury A → Wailing A', direction: 'west' as const, uiGroup: 'Treasury A', tags: [...treasuryTags, ...wailingTags], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'wailing-a-e' },
+  { id: 'treasury-a-n', name: 'Treasury A → Skeleton A', direction: 'west' as const, uiGroup: 'Treasury A', tags: [...treasuryTags, ...skeletonTags], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'skeleton-a-e' },
+  { id: 'treasury-a-e', name: 'Treasury A → Luminous A', direction: 'east' as const, uiGroup: 'Treasury A', tags: [...treasuryTags, ...luminousTags], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'luminous-a-w' },
+  { id: 'treasury-a-s', name: 'Treasury A → Top A', direction: 'north' as const, uiGroup: 'Treasury A', tags: [...treasuryTags, ...topTags], parentNodeId: 'treasury-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-n' },
 
   // Skeleton Cave A
-  { id: 'skeleton-a-w', name: 'Skeleton A → Entrance A', direction: 'north' as const, uiGroup: 'Skeleton A', tags: ['skeleton'], parentNodeId: 'skeleton-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-s' },
-  { id: 'skeleton-a-e', name: 'Skeleton A → Treasury A', direction: 'east' as const, uiGroup: 'Skeleton A', tags: ['skeleton'], parentNodeId: 'skeleton-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-n' },
+  { id: 'skeleton-a-w', name: 'Skeleton A → Entrance A', direction: 'north' as const, uiGroup: 'Skeleton A', tags: [...skeletonTags, ...entranceTags], parentNodeId: 'skeleton-a', arrowType: '<-->' as const, bidirectionalPair: 'entrance-a-s' },
+  { id: 'skeleton-a-e', name: 'Skeleton A → Treasury A', direction: 'east' as const, uiGroup: 'Skeleton A', tags: [...skeletonTags, ...treasuryTags], parentNodeId: 'skeleton-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-n' },
 
   // Luminous Cavern A
-  { id: 'luminous-a-w', name: 'Luminous A → Treasury A', direction: 'west' as const, uiGroup: 'Luminous A', tags: ['luminous', 'cave'], parentNodeId: 'luminous-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-e' },
-  { id: 'luminous-a-n', name: 'Luminous A → Aqueduct A', direction: 'east' as const, uiGroup: 'Luminous A', tags: ['luminous', 'cave'], parentNodeId: 'luminous-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-s' },
+  { id: 'luminous-a-w', name: 'Luminous A → Treasury A', direction: 'west' as const, uiGroup: 'Luminous A', tags: [...luminousTags, ...treasuryTags], parentNodeId: 'luminous-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-e' },
+  { id: 'luminous-a-n', name: 'Luminous A → Aqueduct A', direction: 'east' as const, uiGroup: 'Luminous A', tags: [...luminousTags, ...aqueductTags], parentNodeId: 'luminous-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-s' },
 
   // Sky Walkway A
-  { id: 'sky-a-n', name: 'Sky A → Chapel A', direction: 'west' as const, uiGroup: 'Sky A', tags: ['sky', 'cooridor'], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'chapel-a-s' },
-  { id: 'sky-a-e', name: 'Sky A → Clock Tower A', direction: 'east' as const, uiGroup: 'Sky A', tags: ['sky', 'cooridor'], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'clock-a-w' },
-  { id: 'sky-a-s', name: 'Sky A → Aqueduct A', direction: 'west' as const, uiGroup: 'Sky A', tags: ['sky', 'cooridor'], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-n' },
+  { id: 'sky-a-n', name: 'Sky A → Chapel A', direction: 'west' as const, uiGroup: 'Sky A', tags: [...skyTags, ...chapelTags], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'chapel-a-s' },
+  { id: 'sky-a-e', name: 'Sky A → Clock Tower A', direction: 'east' as const, uiGroup: 'Sky A', tags: [...skyTags, ...clockTags], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'clock-a-w' },
+  { id: 'sky-a-s', name: 'Sky A → Aqueduct A', direction: 'west' as const, uiGroup: 'Sky A', tags: [...skyTags, ...aqueductTags], parentNodeId: 'sky-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-n' },
 
   // Chapel of Dissonance A
-  { id: 'chapel-a-s', name: 'Chapel A → Sky A', direction: 'east' as const, uiGroup: 'Chapel A', tags: ['chapel', 'dissonance'], parentNodeId: 'chapel-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-n' },
-  { id: 'chapel-a-e', name: 'Chapel A → Top A', direction: 'west' as const, uiGroup: 'Chapel A', tags: ['chapel', 'dissonance'], parentNodeId: 'chapel-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-e' },
+  { id: 'chapel-a-s', name: 'Chapel A → Sky A', direction: 'east' as const, uiGroup: 'Chapel A', tags: [...chapelTags, ...skyTags], parentNodeId: 'chapel-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-n' },
+  { id: 'chapel-a-e', name: 'Chapel A → Top A', direction: 'west' as const, uiGroup: 'Chapel A', tags: [...chapelTags, ...topTags], parentNodeId: 'chapel-a', arrowType: '<-->' as const, bidirectionalPair: 'top-a-e' },
 
   // Clock Tower A
-  { id: 'clock-a-w', name: 'Clock Tower A → Sky A', direction: 'west' as const, uiGroup: 'Clock A', tags: ['clock', 'clockwork'], parentNodeId: 'clock-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-e' },
-  { id: 'clock-a-s', name: 'Clock Tower A → Aqueduct A', direction: 'west' as const, uiGroup: 'Clock A', tags: ['clock', 'clockwork'], parentNodeId: 'clock-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-e' },
+  { id: 'clock-a-w', name: 'Clock Tower A → Sky A', direction: 'west' as const, uiGroup: 'Clock A', tags: [...clockTags, ...skyTags], parentNodeId: 'clock-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-e' },
+  { id: 'clock-a-s', name: 'Clock Tower A → Aqueduct A', direction: 'west' as const, uiGroup: 'Clock A', tags: [...clockTags, ...aqueductTags], parentNodeId: 'clock-a', arrowType: '<-->' as const, bidirectionalPair: 'aqueduct-a-e' },
 
   // Aqueduct of Dragons A
-  { id: 'aqueduct-a-s', name: 'Aqueduct A → Luminous A', direction: 'west' as const, uiGroup: 'Aqueduct A', tags: ['aqueduct', 'waterway'], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'luminous-a-n' },
-  { id: 'aqueduct-a-n', name: 'Aqueduct A → Sky A', direction: 'east' as const, uiGroup: 'Aqueduct A', tags: ['aqueduct', 'waterway'], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-s' },
-  { id: 'aqueduct-a-e', name: 'Aqueduct A → Clock Tower A', direction: 'east' as const, uiGroup: 'Aqueduct A', tags: ['aqueduct', 'waterway'], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'clock-a-s' },
+  { id: 'aqueduct-a-s', name: 'Aqueduct A → Luminous A', direction: 'west' as const, uiGroup: 'Aqueduct A', tags: [...aqueductTags, ...luminousTags], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'luminous-a-n' },
+  { id: 'aqueduct-a-n', name: 'Aqueduct A → Sky A', direction: 'east' as const, uiGroup: 'Aqueduct A', tags: [...aqueductTags, ...skyTags], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'sky-a-s' },
+  { id: 'aqueduct-a-e', name: 'Aqueduct A → Clock Tower A', direction: 'east' as const, uiGroup: 'Aqueduct A', tags: [...aqueductTags, ...clockTags], parentNodeId: 'aqueduct-a', arrowType: '<-->' as const, bidirectionalPair: 'clock-a-s' },
 
   // Top Floor A
-  { id: 'top-a-w', name: 'Top A → Marble A', direction: 'west' as const, uiGroup: 'Top A', tags: ['top', 'tower'], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-e' },
-  { id: 'top-a-e', name: 'Top A → Chapel A', direction: 'east' as const, uiGroup: 'Top A', tags: ['top', 'tower'], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'chapel-a-e' },
-  { id: 'top-a-n', name: 'Top A → Treasury A', direction: 'south' as const, uiGroup: 'Top A', tags: ['top', 'tower'], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-s' },
+  { id: 'top-a-w', name: 'Top A → Marble A', direction: 'west' as const, uiGroup: 'Top A', tags: [...topTags, ...marbleTags], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'marble-a-e' },
+  { id: 'top-a-e', name: 'Top A → Chapel A', direction: 'east' as const, uiGroup: 'Top A', tags: [...topTags, ...chapelTags], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'chapel-a-e' },
+  { id: 'top-a-n', name: 'Top A → Treasury A', direction: 'south' as const, uiGroup: 'Top A', tags: [...topTags, ...treasuryTags], parentNodeId: 'top-a', arrowType: '<-->' as const, bidirectionalPair: 'treasury-a-s' },
 ];
 
 // Helper function to generate Castle B exits from Castle A
 function generateCastleBExits(castleAExits: HodExit[]): HodExit[] {
+  const toBRegex = / A\b/g; // Word boundary ensures we only match " A" at word end
   return castleAExits.map(exit => {
     const transformed = {
       ...exit,
       id: exit.id.replace('-a-', '-b-'),
-      name: exit.name.replace(/ A/g, ' B'),
+      name: exit.name.replace(toBRegex, ' B'),
     };
     if (exit.bidirectionalPair) {
       transformed.bidirectionalPair = exit.bidirectionalPair.replace('-a-', '-b-');
@@ -130,7 +145,7 @@ function generateCastleBExits(castleAExits: HodExit[]): HodExit[] {
       transformed.parentNodeId = exit.parentNodeId.replace('-a', '-b');
     }
     if (exit.uiGroup) {
-      transformed.uiGroup = exit.uiGroup.replace(/ A/g, ' B');
+      transformed.uiGroup = exit.uiGroup.replace(toBRegex, ' B');
     }
     return transformed;
   });
