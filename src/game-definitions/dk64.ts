@@ -243,7 +243,7 @@ const dk64Entrances: LocationReference[] = dk64Exits;
 const dk64Restrictions: EntranceRestriction[] = dk64Exits.map(exit => ({
   gameId: 'dk64',
   exitId: exit.id,
-  allowedEntranceIds: dk64Exits.filter(e => e.id !== exit.id).map(e => e.id),
+  allowedEntranceIds: dk64Exits.map(e => e.id),
 }));
 
 export const dk64: Game = {
