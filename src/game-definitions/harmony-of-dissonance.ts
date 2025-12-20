@@ -469,6 +469,11 @@ export const hod: Game = {
   top-b["Castle Top Floor B"];
   illusion-a-e <-->|cross| treasury-b;
   luminous-b <-->|cross| sky-a;
+  clock-a <-->|warp room| clock-b;
+  entrance-a <-->|warp room| entrance-b;
+  treasury-a <-->|lure key warp room| treasury-b;
+  top-a <-->|chapel warp room| top-b;
+  luminous-a <-->|crushing warp room| luminous-b;
 `,
   options: [
     {
