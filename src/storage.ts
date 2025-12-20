@@ -88,6 +88,16 @@ export const storage = {
     this.setState(state);
   },
 
+  renameSession(sessionId: string, newName: string): void {
+    const state = this.getState();
+    const session = state.sessions.find(s => s.id === sessionId);
+    if (session) {
+      session.name = newName;
+      session.updatedAt = Date.now();
+      this.setState(state);
+    }
+  },
+
   setCurrentGame(gameId: string): void {
     const state = this.getState();
     state.currentGameId = gameId;

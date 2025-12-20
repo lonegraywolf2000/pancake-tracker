@@ -3,6 +3,7 @@ import Fuse from 'fuse.js'
 import './App.css';
 import { gameManager } from './gameManager';
 import { storage } from './storage';
+import { SessionManager } from './SessionManager';
 import type { Game, GameSession } from './types';
 
 const ModalMap = lazy(() => import('./ModalMap'));
@@ -214,6 +215,7 @@ function App() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(appState.currentSessionId);
   const [, forceUpdate] = useState({});
   const [isNotepadOpen, setIsNotepadOpen] = useState(false);
+  const [isSessionManagerOpen, setIsSessionManagerOpen] = useState(false);
 
   const game = gameManager.getGame(currentGameId);
   if (!game) return <div>Game not found</div>;
@@ -236,6 +238,11 @@ function App() {
   const [selected, setSelected] = useState<Record<string, string>>(session.exitToEntranceMap);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Sync selected state when session changes
+  useEffect(() => {
+    setSelected(session.exitToEntranceMap);
+  }, [currentSessionId, currentGameId]);
+
   const handleGameChange = useCallback((gameId: string) => {
     setCurrentGameId(gameId);
     storage.setCurrentGame(gameId);
@@ -246,6 +253,14 @@ function App() {
     setCurrentSessionId(sessionId);
     storage.setCurrentSession(sessionId);
   }, []);
+
+  const handleDeleteSession = useCallback((sessionId: string) => {
+    storage.deleteSession(sessionId);
+    if (currentSessionId === sessionId) {
+      setCurrentSessionId(null);
+    }
+    forceUpdate({});
+  }, [currentSessionId]);
 
   const handleCreateNewSession = useCallback(() => {
     const newSession = gameManager.createSession(currentGameId, `${game.name} Session ${Date.now()}`);
@@ -341,6 +356,7 @@ function App() {
         {currentSessionId === null && sessions.length > 0 && (
           <button onClick={handleCreateNewSession} style={{ marginLeft: '0.5rem' }}>New Session</button>
         )}
+        <button onClick={() => setIsSessionManagerOpen(true)} style={{ marginLeft: '0.5rem', fontSize: '0.85rem' }}>Manage Sessions</button>
       </div>
 
       <div>
@@ -357,6 +373,18 @@ function App() {
         onRequestClose={() => setIsOpen(false)}
         mermaidCode={mermaidCode}
       />}
+      {isSessionManagerOpen && (
+        <SessionManager
+          sessions={sessions}
+          currentSessionId={currentSessionId}
+          onSessionChange={(sessionId) => {
+            handleSessionChange(sessionId);
+            setIsSessionManagerOpen(false);
+          }}
+          onSessionDelete={handleDeleteSession}
+          onClose={() => setIsSessionManagerOpen(false)}
+        />
+      )}
       {isNotepadOpen && <Suspense fallback={<div>Loading notepad...</div>}>
         <ModalNotepad
           isOpen={isNotepadOpen}
