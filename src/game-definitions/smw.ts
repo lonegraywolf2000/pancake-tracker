@@ -196,7 +196,10 @@ const smwOptionActions: OptionAction[] = [
 const smwStaticConnections = `
   graph TD;
   linkStyle default stroke:#aaa,stroke-width:3px;
+  __START__["Start"]
   yi-s["Yoshi's Island"];
+  __START__-->yi-s
+  style __START__ display:none,opacity:0;
   yi-y["YI Yellow Switch"];
   dp-o["Donut Plains"];
   dp-o-->dp-n["DP Northeast"];
@@ -258,6 +261,7 @@ export const smw: Game = {
   id: 'smw',
   name: 'Super Mario World',
   description: 'Classic Super Mario World entrance randomizer',
+  startNodeId: '__START__',
   nodes: [],
   exits: smwExits,
   entrances: smwEntrances,

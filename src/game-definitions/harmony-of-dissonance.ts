@@ -429,6 +429,7 @@ export const hod: Game = {
   id: 'hod',
   name: 'Castlevania: Harmony of Dissonance',
   description: 'Metroidvania entrance randomizer',
+  startNodeId: '__START__',
   nodes: hodNodes,
   exits: allExitsOnly,
   entrances: allExitsOnly,
@@ -439,7 +440,10 @@ export const hod: Game = {
   edgeLabelExits: ['entrance-a-n', 'entrance-a-e', 'entrance-a-s', 'marble-a-w', 'marble-a-ssw', 'marble-a-sse', 'marble-a-se', 'marble-a-e', 'wailing-a-w', 'wailing-a-e', 'wailing-a-s', 'shrine-a-w', 'shrine-a-n', 'skeleton-a-w', 'skeleton-a-e', 'treasury-a-w', 'treasury-a-n', 'treasury-a-e', 'treasury-a-s', 'illusion-a-w', 'illusion-a-e', 'luminous-a-w', 'luminous-a-n', 'sky-a-n', 'sky-a-e', 'sky-a-s', 'chapel-a-s', 'chapel-a-e', 'clock-a-w', 'clock-a-s', 'aqueduct-a-s', 'aqueduct-a-n', 'aqueduct-a-e', 'top-a-w', 'top-a-n', 'entrance-b-n', 'entrance-b-e', 'entrance-b-s', 'marble-b-w', 'marble-b-ssw', 'marble-b-sse', 'marble-b-se', 'marble-b-e', 'wailing-b-w', 'wailing-b-e', 'wailing-b-s', 'shrine-b-w', 'shrine-b-n', 'skeleton-b-w', 'skeleton-b-e', 'treasury-b-w', 'treasury-b-n', 'treasury-b-e', 'treasury-b-s', 'illusion-b-w', 'illusion-b-e', 'luminous-b-w', 'luminous-b-n', 'sky-b-n', 'sky-b-e', 'sky-b-s', 'chapel-b-s', 'chapel-b-e', 'clock-b-w', 'clock-b-s', 'aqueduct-b-s', 'aqueduct-b-n', 'aqueduct-b-e', 'top-b-w', 'top-b-n'],
   staticConnections: `
   graph TD;
+  __START__["Start"]
   entrance-a["Entrance A"];
+  __START__-->entrance-a;
+  style __START__ display:none,opacity:0;
   marble-a["Marble Corridor A"];
   wailing-a["Wailing Way A"];
   shrine-a["Shrine of the Apostates A"];
