@@ -32,6 +32,7 @@ export type Game = {
   name: string;
   description?: string;
   nodes: LocationReference[]; // Always-existing map nodes
+  startNodeId: string;
   exits: LocationReference[];
   entrances: LocationReference[];
   staticConnections: string; // Static Mermaid.js graph connections
