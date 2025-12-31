@@ -275,18 +275,23 @@ function App() {
   }, [session]);
 
   const handleDropdownChange = useCallback((idx: number, newValue: string) => {
-    const exitId = exits[idx].id;
-    // Use gameManager to handle the mapping, which includes bidirectional pairing logic
-    gameManager.setExitMapping(session!, exitId, newValue);
+    // Special case: start node (idx = -1)
+    if (idx === -1 && game.startNodeId) {
+      gameManager.setExitMapping(session!, game.startNodeId, newValue);
+    } else {
+      const exitId = exits[idx].id;
+      // Use gameManager to handle the mapping, which includes bidirectional pairing logic
+      gameManager.setExitMapping(session!, exitId, newValue);
+    }
     setSelected({ ...session!.exitToEntranceMap });
-  }, [exits, session]);
+  }, [exits, session, game]);
 
   const handleReset = () => {
     gameManager.resetSession(session!);
     setSelected({ ...session!.exitToEntranceMap });
   };
 
-  const dynamicLinks = gameManager.generateDynamicLinks(session!, exits);
+  const dynamicLinks = gameManager.generateDynamicLinks(session!, exits, game);
 
   // Get visible exits and option-based paths from gameManager
   const visibleExitIds = gameManager.getVisibleExits(session!);
@@ -397,6 +402,32 @@ function App() {
     <article className={`body-grid${shouldShowMap ? '' : ' no-map'}`}>
       <section className='dropdown-grid'>
         {(() => {
+          // Render start node if it's customizable
+          let startNodeRenders: React.ReactNode[] = [];
+          
+          if (game.customizableStart && game.startNodeId) {
+            const startNode = game.nodes.find(n => n.id === game.startNodeId);
+            if (startNode) {
+              const validEntrances = game.entrances;
+              const overallIdx = -1; // Special index for start node
+
+              startNodeRenders.push(
+                <div key="start-group">
+                  <h3>Start</h3>
+                  <RenderGridRow
+                    key={game.startNodeId}
+                    idx={overallIdx}
+                    value={selected[game.startNodeId] || ''}
+                    onDropdownChange={handleDropdownChange}
+                    validEntrances={validEntrances}
+                    exitName={startNode.name}
+                    startUnselected={game.startUnselected}
+                  />
+                </div>
+              );
+            }
+          }
+
           // Group exits by UI group while preserving order of first appearance
           const grouped = new Map<string, typeof displayedExits>();
           const groupOrder: string[] = []; // Track order of first appearance
@@ -460,7 +491,7 @@ function App() {
             );
           });
 
-          return renderedGroups;
+          return [...startNodeRenders, ...renderedGroups];
         })()}
       </section>
       {shouldShowMap &&

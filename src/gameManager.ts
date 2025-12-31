@@ -230,11 +230,18 @@ export const gameManager = {
     const exitRef = game.exits.find(e => e.id === exitId);
 
     // Find if another exit already maps to this destination exit
+    // But never include the start node in the swap search
     const swapExitId = Object.entries(currentMapping).find(
-      ([_, mappedExitId]) => mappedExitId === destinationExitId
+      ([existingExitId, mappedExitId]) => 
+        mappedExitId === destinationExitId && 
+        existingExitId !== exitId &&
+        existingExitId !== game.startNodeId
     )?.[0];
 
-    if (swapExitId && swapExitId !== exitId) {
+    // Only perform swapping if the game allows it
+    const shouldSwapOnDuplicate = game.allowSwapOnDuplicate ?? false;
+
+    if (swapExitId && shouldSwapOnDuplicate) {
       // Check if the swap exit is also a bidirectional pair
       // If so, don't swap - let the pair logic handle it
       const swapExitRef = game.exits.find(e => e.id === swapExitId);
@@ -258,7 +265,7 @@ export const gameManager = {
         currentMapping[exitId] = destinationExitId;
       }
     } else {
-      // Just set the new mapping
+      // No swap: just set the new mapping
       currentMapping[exitId] = destinationExitId;
     }
 
@@ -294,7 +301,8 @@ export const gameManager = {
    */
   generateDynamicLinks(
     session: GameSession,
-    exits: Game['exits']
+    exits: Game['exits'],
+    game: Game
   ): string {
     // Check if transitions are decoupled
     const decoupleTransitions = session.selectedOptions['decouple-transitions'] === 'true';
@@ -340,7 +348,28 @@ export const gameManager = {
         return `${exit.id}${arrow}${destinationNodeId};`;
       })
       .filter(line => line.length > 0)
+      .concat(this.generateStartNodeLink(session, game))
       .join('\n');
+  },
+
+  generateStartNodeLink(session: GameSession, game: Game): string[] {
+    // Only generate start node link if the game allows customizable start
+    if (!game.customizableStart) return [];
+
+    // Generate the connection from the start node to the selected entrance
+    const startNodeMapping = session.exitToEntranceMap[game.startNodeId];
+    if (!startNodeMapping) return [];
+
+    // Find the entrance and its parent node
+    const entrance = game.entrances.find(e => e.id === startNodeMapping);
+    if (!entrance) return [];
+
+    const destinationNodeId = entrance.parentNodeId || startNodeMapping;
+    
+    // Skip self-loops
+    if (game.startNodeId === destinationNodeId) return [];
+
+    return [`${game.startNodeId}-->${destinationNodeId};`];
   },
 
   setOption(

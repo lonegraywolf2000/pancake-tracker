@@ -47,6 +47,7 @@ export type Game = {
   startUnselected?: boolean; // Optional: if true, all dropdowns start with empty selection (defaults to false)
   allowSwapOnDuplicate?: boolean; // Optional: if true, selecting a taken value swaps the mappings (defaults to false for HoD-style, true for SMW-style)
   hideDisabledOptions?: boolean; // Optional: if true, completely hide disabled options from dropdowns instead of showing them disabled (defaults to false)
+  customizableStart?: boolean; // Optional: if true, the start node can be selected via dropdown (defaults to false)
 };
 
 /**

@@ -295,11 +295,10 @@ export const dk64: Game = {
   entrances: dk64Entrances,
   staticConnections: `
   graph TD;
-  __START__["Start"];
+  %% __START__["Start"];
   training["Training Ground"];
   isles["DK Isles"];
-  __START__-->isles;
-  style __START__ display:none,opacity:0;
+  %% __START__-->isles;
   japes["Jungle Japes"];
   aztec["Angry Aztec"];
   factory["Frantic Factory"];

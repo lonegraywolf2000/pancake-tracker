@@ -198,8 +198,6 @@ const smwStaticConnections = `
   linkStyle default stroke:#aaa,stroke-width:3px;
   __START__["Start"]
   yi-s["Yoshi's Island"];
-  __START__-->yi-s
-  style __START__ display:none,opacity:0;
   yi-y["YI Yellow Switch"];
   dp-o["Donut Plains"];
   dp-o-->dp-n["DP Northeast"];
@@ -262,7 +260,9 @@ export const smw: Game = {
   name: 'Super Mario World',
   description: 'Classic Super Mario World entrance randomizer',
   startNodeId: '__START__',
-  nodes: [],
+  nodes: [
+    { id: '__START__', name: 'Start' },
+  ],
   exits: smwExits,
   entrances: smwEntrances,
   restrictions: smwRestrictions,
@@ -284,6 +284,8 @@ export const smw: Game = {
   ],
   optionActions: smwOptionActions,
   staticConnections: smwStaticConnections,
+  allowSwapOnDuplicate: true,
+  customizableStart: true,
   options: [
     {
       id: 'map-teleport-shuffle',
@@ -309,5 +311,4 @@ export const smw: Game = {
       ],
     },
   ],
-  allowSwapOnDuplicate: true,
 };
